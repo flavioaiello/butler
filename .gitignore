@@ -1,0 +1,23 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Node.js
+node_modules/
+
+# Development files
+AGENTS.md
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak

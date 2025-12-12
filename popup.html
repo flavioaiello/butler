@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self';">
+  <title>Butler</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🔐 Butler Inbox Archiver</h1>
+      <button id="clearBtn" class="btn btn-small" title="Clear Tokens">Clear</button>
+    </header>
+    
+    <div id="tokenStatus" class="token-status"></div>
+    
+    <div class="button-group">
+      <button id="dryRunBtn" class="btn btn-secondary btn-half">
+        🔍 Dry Run
+      </button>
+      <button id="archiveBtn" class="btn btn-primary btn-half">
+        📦 Archive All
+      </button>
+    </div>
+    
+    <div id="status" class="status"></div>
+    
+    <div id="resultSection" class="result-section">
+      <div id="resultSummary" class="result-summary"></div>
+      <div id="logContainer" class="log-container">
+        <pre id="logOutput"></pre>
+      </div>
+    </div>
+    
+    <footer>
+      <p class="hint">Dry Run shows which emails from conversations would be archived, keeping only the latest message of each conversation.</p>
+    </footer>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
