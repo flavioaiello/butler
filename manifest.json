@@ -13,7 +13,8 @@
     "https://outlook.office.com/*",
     "https://outlook.office365.com/*",
     "https://outlook.cloud.microsoft/*",
-    "https://substrate.office.com/*"
+    "https://substrate.office.com/*",
+    "http://localhost:11434/*"
   ],
   "background": {
     "service_worker": "background.js"

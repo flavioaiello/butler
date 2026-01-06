@@ -10,32 +10,71 @@
 <body>
   <div class="container">
     <header>
-      <h1>🔐 Butler Inbox Archiver</h1>
-      <button id="clearBtn" class="btn btn-small" title="Clear Tokens">Clear</button>
+      <h1>Butler</h1>
+      <div class="header-controls">
+        <select id="modelSelect" class="model-select" title="Select Ollama Model">
+          <option value="">Loading...</option>
+        </select>
+        <button id="clearBtn" class="btn btn-small" title="Clear Tokens">Clear</button>
+      </div>
     </header>
     
     <div id="tokenStatus" class="token-status"></div>
     
-    <div class="button-group">
-      <button id="dryRunBtn" class="btn btn-secondary btn-half">
-        🔍 Dry Run
-      </button>
-      <button id="archiveBtn" class="btn btn-primary btn-half">
-        📦 Archive All
-      </button>
-    </div>
+    <section class="quick-actions">
+      <span class="section-label">Quick Actions:</span>
+      <div class="button-group">
+        <button id="dryRunBtn" class="btn btn-secondary btn-half">
+          Dry Run
+        </button>
+        <button id="archiveBtn" class="btn btn-secondary btn-half">
+          Archive Replied
+        </button>
+      </div>
+    </section>
     
-    <div id="status" class="status"></div>
+    <div class="divider"></div>
     
-    <div id="resultSection" class="result-section">
+    <section class="prompt-section">
+      <div class="progress-row">
+        <div class="iterations-group">
+          <label for="iterationsInput" class="iterations-label">Emails to triage:</label>
+          <input 
+            type="number" 
+            id="iterationsInput" 
+            class="iterations-input" 
+            min="1" 
+            max="200" 
+            value="20"
+          >
+        </div>
+        <div id="progressBar" class="progress-bar hidden">
+          <div id="progressFill" class="progress-fill"></div>
+          <span id="progressText" class="progress-text">0/0</span>
+        </div>
+      </div>
+      <div class="prompt-actions">
+        <button id="askBtn" class="btn btn-primary btn-full">
+          Triage Inbox
+        </button>
+      </div>
+    </section>
+    
+    <div id="status" class="status hidden"></div>
+    
+    <div id="resultSection" class="result-section hidden">
       <div id="resultSummary" class="result-summary"></div>
+      <div id="planSection" class="plan-section hidden">
+        <div class="plan-header">Planned Actions:</div>
+        <div id="planList" class="plan-list"></div>
+      </div>
       <div id="logContainer" class="log-container">
         <pre id="logOutput"></pre>
       </div>
     </div>
     
     <footer>
-      <p class="hint">Dry Run shows which emails from conversations would be archived, keeping only the latest message of each conversation.</p>
+      <p class="hint">Ask Butler to organize your inbox using natural language.</p>
     </footer>
   </div>
   
