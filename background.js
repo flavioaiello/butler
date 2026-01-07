@@ -179,18 +179,18 @@ Classify the email into **exactly one** of the following folders:
 * **BLOCKERS:** Pending approvals or decisions required for a critical workflow to proceed.
 
 2. **"2-Action"**
-* **TASKS:** Explicit requests where you are the primary recipient requiring a reply, decision, document review, or meeting scheduling. Implicit forwarded tasks also qualify.
+* **TASKS:** Direct requests requiring a reply, decision, document review, or meeting action. Includes forwarded items with open work assigned to you.
 * **FUTURE DEADLINES:** Specific requests or deliverables due in >24 hours.
 
 3. **"3-Attention"**
-* **STRATEGIC READ:** Threads where you are explicitly @mentioned. High-priority updates, significant policy changes, or threat intelligence that requires understanding but no immediate response.
+* **STRATEGIC READ:** Threads where you are explicitly @mentioned. Reminders, high-priority updates, significant policy changes, or threat intelligence that requires understanding but no immediate response.
 * **ANOMALIES:** Unusual automated alerts or "suspicious activity" flags that are not yet confirmed incidents.
 
 4. **"4-FYI"**
 * **PROJECT PASSIVE:** Threads where you are CC'd, @mentioned for visibility only, or "receipt acknowledged" style replies.
 * **WORK UPDATES:** General project progress reports that do not require your direct intervention.
 
-5. **"5-CORP"**
+5. **"5-ORG"**
 * **ADMINISTRATIVE:** General HR announcements, All-Hands invites, benefits information, or non-security company news.
 
 6. **"6-Zero"**
@@ -199,12 +199,12 @@ Classify the email into **exactly one** of the following folders:
 
 ## Tie-Breaking Rules
 * **Direct Interaction:** If an email is CC'd but contains a direct question or task specifically for the user, promote to **"2-Action"**.
-* **Corporate Escalation:** If a **"5-CORP"** email (like HR) contains a mandatory deadline within 24 hours, promote to **"1-Urgent"**.
+* **Corporate Escalation:** If a **"5-ORG"** email (like HR) contains a mandatory deadline within 24 hours, promote to **"1-Urgent"**.
 * **Alert Severity:** If an automated alert indicates a specific, active exploit, classify as **"1-Urgent"**. If it is a generic warning, classify as **"3-Attention"**.
 
 ## Output Format
 Respond ONLY with the following JSON object. Do not include markdown code blocks or any conversational filler:
-{"match": true, "folder": "1-Urgent|2-Action|3-Attention|4-FYI|5-CORP|6-Zero", "reasoning": "Brief justification referencing specific keywords, sender, or recipient status (To vs CC)."}`;
+{"match": true, "folder": "1-Urgent|2-Action|3-Attention|4-FYI|5-ORG|6-Zero", "reasoning": "Brief justification referencing specific keywords, sender, or recipient status (To vs CC)."}`;
 
   const userPrompt = `Criteria: "${criteria}"
 
@@ -234,7 +234,7 @@ Classify this email.`;
     const parsed = JSON.parse(jsonMatch[0]);
     
     // Validate folder is one of the allowed values
-    const validFolders = ['1-Urgent', '2-Action', '3-Attention', '4-FYI', '5-CORP', '6-Zero'];
+    const validFolders = ['1-Urgent', '2-Action', '3-Attention', '4-FYI', '5-ORG', '6-Zero'];
     let folder = typeof parsed.folder === 'string' ? parsed.folder.trim() : null;
     if (folder && !validFolders.includes(folder)) {
       // Try to normalize common variations
@@ -247,8 +247,8 @@ Classify this email.`;
         folder = '3-Attention';
       } else if (normalized.includes('fyi') || normalized === '4') {
         folder = '4-FYI';
-      } else if (normalized.includes('corp') || normalized === '5') {
-        folder = '5-CORP';
+      } else if (normalized.includes('org') || normalized === '5') {
+        folder = '5-ORG';
       } else if (normalized.includes('zero') || normalized === '6') {
         folder = '6-Zero';
       } else {
@@ -412,13 +412,13 @@ async function processAIPrompt(userPrompt, token, maxIterations) {
   log.push(`Complete: ${result.moved} triaged, ${errorCount} errors out of ${result.processed} processed`);
   
   // Summary by folder
-  const folderCounts = { '1-Urgent': 0, '2-Action': 0, '3-Attention': 0, '4-FYI': 0, '5-CORP': 0, '6-Zero': 0 };
+  const folderCounts = { '1-Urgent': 0, '2-Action': 0, '3-Attention': 0, '4-FYI': 0, '5-ORG': 0, '6-Zero': 0 };
   result.results.filter(r => r.moved).forEach(r => {
     if (r.folder && Object.prototype.hasOwnProperty.call(folderCounts, r.folder)) {
       folderCounts[r.folder]++;
     }
   });
-  log.push(`Distribution: Urgent=${folderCounts['1-Urgent']}, Action=${folderCounts['2-Action']}, Attention=${folderCounts['3-Attention']}, FYI=${folderCounts['4-FYI']}, CORP=${folderCounts['5-CORP']}, Zero=${folderCounts['6-Zero']}`);
+  log.push(`Distribution: Urgent=${folderCounts['1-Urgent']}, Action=${folderCounts['2-Action']}, Attention=${folderCounts['3-Attention']}, FYI=${folderCounts['4-FYI']}, ORG=${folderCounts['5-ORG']}, Zero=${folderCounts['6-Zero']}`);  
   
   return {
     success: true,
